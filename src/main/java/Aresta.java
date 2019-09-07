@@ -1,4 +1,7 @@
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Aresta {
     private String identificador;
@@ -11,6 +14,10 @@ public class Aresta {
         this.verticeOrigem = verticeOrigem;
         this.verticeDestino = verticeDestino;
         this.dirigida = dirigida;
+    }
+
+    public Set<Vertice> obterVertices() {
+        return new HashSet<>(Arrays.asList(this.verticeOrigem, this.verticeDestino));
     }
 
     public String getIdentificador() {
@@ -51,7 +58,8 @@ public class Aresta {
         if (obj instanceof Aresta) {
             final Aresta other = (Aresta) obj;
             return  Objects.equals(this.identificador, other.identificador) &&
-                    Objects.equals(this.verticeOrigem, other.verticeDestino) &&
+                    Objects.equals(this.verticeOrigem, other.verticeOrigem) &&
+                    Objects.equals(this.verticeDestino, other.verticeDestino) &&
                     Objects.equals(this.dirigida, other.dirigida);
         } else {
             return false;
