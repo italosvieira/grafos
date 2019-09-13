@@ -1,9 +1,9 @@
 import java.util.Objects;
 
-public class Vertice {
+public class Vertice implements Comparable<Vertice> {
     private String identificador;
 
-    public Vertice(String identificador) {
+    Vertice(String identificador) {
         this.identificador = identificador;
     }
 
@@ -23,5 +23,10 @@ public class Vertice {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(Vertice outro) {
+        return this.identificador.compareTo(outro.getIdentificador());
     }
 }
