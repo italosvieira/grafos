@@ -3,7 +3,7 @@ import java.util.stream.Collectors;
 
 public class Grafo {
     private String identificador;
-    private Boolean dirigido;
+    private Boolean dirigido;//TODO talvez remover isso.
     private TreeMap<Vertice, List<Aresta>> grafo;
 
     public Grafo(String identificador) {
