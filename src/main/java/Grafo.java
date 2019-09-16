@@ -78,7 +78,6 @@ public class Grafo {
         return retorno;
     }
 
-    //TODO Qual a diferença entre um grafo ponderado e dirigido? Se tiver um vértice que só recebe a direção ele não conexo?
     public Boolean isGrafoConexo() {
         if (this.grafo == null || this.obterTodosOsVertices().isEmpty()) {
             return Boolean.FALSE;
