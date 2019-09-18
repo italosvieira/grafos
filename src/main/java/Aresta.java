@@ -7,13 +7,11 @@ public class Aresta {
     private String identificador;
     private Vertice verticeOrigem;
     private Vertice verticeDestino;
-    private Boolean dirigida;
 
-    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino, Boolean dirigida) {
+    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino) {
         this.identificador = identificador;
         this.verticeOrigem = verticeOrigem;
         this.verticeDestino = verticeDestino;
-        this.dirigida = dirigida;
     }
 
     public Set<Vertice> obterVertices() {
@@ -40,17 +38,9 @@ public class Aresta {
         this.verticeDestino = verticeDestino;
     }
 
-    public Boolean getDirigida() {
-        return dirigida;
-    }
-
-    public void setDirigida(Boolean dirigida) {
-        this.dirigida = dirigida;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(this.identificador, this.verticeOrigem, this.verticeDestino, this.dirigida);
+        return Objects.hash(this.identificador, this.verticeOrigem, this.verticeDestino);
     }
 
     @Override
@@ -59,8 +49,7 @@ public class Aresta {
             final Aresta other = (Aresta) obj;
             return  Objects.equals(this.identificador, other.identificador) &&
                     Objects.equals(this.verticeOrigem, other.verticeOrigem) &&
-                    Objects.equals(this.verticeDestino, other.verticeDestino) &&
-                    Objects.equals(this.dirigida, other.dirigida);
+                    Objects.equals(this.verticeDestino, other.verticeDestino);
         } else {
             return false;
         }
