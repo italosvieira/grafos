@@ -3,12 +3,13 @@ import java.util.stream.Collectors;
 
 public class Grafo {
     private String identificador;
-    private Boolean dirigido;//TODO talvez remover isso.
+    private Boolean isDirigido;
     private TreeMap<Vertice, List<Aresta>> grafo;
 
-    public Grafo(String identificador) {
-        this.identificador = identificador;
+    public Grafo(String identificador, Boolean isDirigido) {
         this.grafo = new TreeMap<>();
+        this.isDirigido = isDirigido;
+        this.identificador = identificador;
     }
 
     public void adicionarVertice(Vertice v) {
@@ -83,30 +84,12 @@ public class Grafo {
             return Boolean.FALSE;
         }
 
-        if (this.isGrafoPonderado()) {
-            return this.isGrafoPonderadoConexo();
-        } else {
-            return this.isGrafoDirigidoConexo();
-        }
-    }
-
-    private Boolean isGrafoPonderado() {
-        return this.obterTodasAsArestas().stream().noneMatch(a -> Boolean.TRUE.equals(a.getDirigida()));
-    }
-
-    private Boolean isGrafoDirigido() {
-        return this.obterTodasAsArestas().stream().anyMatch(a -> Boolean.TRUE.equals(a.getDirigida()));
-    }
-
-    private Boolean isGrafoPonderadoConexo() {
         return this.grafo.values().stream().noneMatch(List::isEmpty);
     }
 
-    private Boolean isGrafoDirigidoConexo() {
-        Set<Aresta> arestas = this.obterTodasAsArestas();
-
-
-        return this.grafo.values().stream().anyMatch(List::isEmpty);
+    public Boolean existeCaminhoDeEuler() {
+        Long quantidadeDeverticesDeGrauImpar = this.grafo.values().stream().mapToInt(List::size).filter(i -> i % 2 != 0).count();
+        return this.isGrafoConexo() && (quantidadeDeverticesDeGrauImpar == 0L || quantidadeDeverticesDeGrauImpar == 2L);
     }
 
     /*private void exibirMatrizAdjacente() {
