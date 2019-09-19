@@ -12,7 +12,7 @@
 * [x] Obs.: A solução adotada deve contemplar a parametrização para grafos ponderados e grafos dirigidos.
 
 ##
-* [X] 2 - Implementar a solução para a atividade 1 apresentando a Matriz de Adjacências.
+* [] 2 - Implementar a solução para a atividade 1 apresentando a Matriz de Adjacências.
 ##
 * [X] 3 - Adicionar uma funcionalidade na solução adotada para identificar a existência de um caminho de Euler.
 ##

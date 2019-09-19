@@ -1,5 +1,4 @@
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -130,7 +129,7 @@ public class Grafo {
     }
 
     private void exibirMatrizAdjacenteGrafoDirigido() {
-
+        //TODO
     }
 
     private void exibirMatrizAdjacenteGrafoNaoDirigido() {
@@ -163,29 +162,6 @@ public class Grafo {
 
             matriz.add(matrizLinha);
         });
-
-        /*for (Vertice verticeLinha: vertices) {
-            StringBuilder matrizLinha = new StringBuilder(verticeLinha.getIdentificador() + " ");
-            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
-
-            for (Vertice verticeColuna: vertices) {
-                boolean existeLigacao;
-
-                if (verticeLinha.equals(verticeColuna)) {
-                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna));
-                } else {
-                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeColuna) || a.getVerticeDestino().equals(verticeColuna));
-                }
-
-                if (existeLigacao) {
-                    matrizLinha.append("1 ");
-                } else {
-                    matrizLinha.append("0 ");
-                }
-            }
-
-            matriz.add(matrizLinha);
-        }*/
 
         System.out.println(matriz);
     }
