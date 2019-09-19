@@ -1,3 +1,6 @@
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,16 +70,42 @@ public class Grafo {
         return this.grafo.get(v).size();
     }
 
-    public List<String> obterGrausMinimoMedioMaximo() {
+    public void obterGrausMinimoMedioMaximo() {
         List<Integer> graus = this.grafo.values().stream().mapToInt(List::size).boxed().collect(Collectors.toList());
         Set<Integer> setGraus = new HashSet<>(graus);
+        StringJoiner sj = new StringJoiner(System.lineSeparator());
 
-        List<String> retorno = new ArrayList<>();
-        retorno.add("Grau Médio: " + (graus.stream().mapToInt(g -> g).sum() + graus.size()));
-        retorno.add("Grau Mínimo: " + setGraus.stream().mapToInt(g -> g).min());
-        retorno.add("Grau Máximo: " + setGraus.stream().mapToInt(g -> g).max());
+        this.obterGrauMedio(sj, graus);
+        this.obterGrauMinimo(sj, setGraus);
+        this.obterGrauMaximo(sj, setGraus);
 
-        return retorno;
+        System.out.println(sj);
+    }
+
+    private void obterGrauMinimo(StringJoiner sj, Set<Integer> setGraus) {
+        OptionalInt o = setGraus.stream().mapToInt(g -> g).min();
+
+        if (o.isPresent()) {
+            sj.add("Grau Mínimo: " + o.getAsInt());
+        } else {
+            sj.add("Grau Mínimo: Erro ao obter grau mínimo.");
+        }
+    }
+
+    private void obterGrauMaximo(StringJoiner sj, Set<Integer> setGraus) {
+        OptionalInt o = setGraus.stream().mapToInt(g -> g).max();
+
+        if (o.isPresent()) {
+            sj.add("Grau Máximo: " + o.getAsInt());
+        } else {
+            sj.add("Grau Máximo: Erro ao obter grau mínimo.");
+        }
+    }
+
+    private void obterGrauMedio(StringJoiner sj, List<Integer> graus) {
+        BigDecimal resultado = new BigDecimal(String.valueOf(graus.stream().mapToInt(g -> g).sum())).divide(new BigDecimal(String.valueOf(graus.size())), RoundingMode.HALF_UP).setScale(2, RoundingMode.HALF_UP);
+        sj.add("Grau Médio: " + resultado.toPlainString());
+
     }
 
     public Boolean isGrafoConexo() {
@@ -92,36 +121,74 @@ public class Grafo {
         return this.isGrafoConexo() && (quantidadeDeverticesDeGrauImpar == 0L || quantidadeDeverticesDeGrauImpar == 2L);
     }
 
-    /*private void exibirMatrizAdjacente() {
+    public void exibirMatrizAdjacente() {
+        if (Boolean.TRUE.equals(this.isDirigido)) {
+            this.exibirMatrizAdjacenteGrafoDirigido();
+        } else {
+            this.exibirMatrizAdjacenteGrafoNaoDirigido();
+        }
+    }
+
+    private void exibirMatrizAdjacenteGrafoDirigido() {
+
+    }
+
+    private void exibirMatrizAdjacenteGrafoNaoDirigido() {
         StringJoiner matriz = new StringJoiner(System.lineSeparator());
         Set<Vertice> vertices = this.obterTodosOsVertices();
 
-        for (Vertice linha: vertices) {
-            StringBuilder matrizLinha = new StringBuilder(linha.getIdentificador() + " ");
-            List<Aresta> arestasDoVerticeLinha = this.grafo.get(linha);
+        StringBuilder s1 = new StringBuilder("  ");
+        vertices.forEach(v -> s1.append(v.getIdentificador()).append(" "));
+        matriz.add(s1);
 
-            //TODO Se tiver uma aresta com 2 vertices um direcionado e outro não. Qual que prevalece na criação da matriz adjacente?
-            //TODO Se tiver vários vertice direcionado ligando os mesmos vertices? Como que representa em uma matriz adjacente?
-            for (Vertice coluna: vertices) {
-                Aresta arestaOrigemDestino = arestasDoVerticeLinha.stream().filter(a -> a.getVerticeOrigem().equals(linha) && a.getVerticeDestino().equals(coluna)).findFirst().orElse(null);
-                Aresta arestaDestinoOrigem = arestasDoVerticeLinha.stream().filter(a -> a.getVerticeOrigem().equals(coluna) && a.getVerticeDestino().equals(linha)).findFirst().orElse(null);
+        vertices.forEach(verticeLinha -> {
+            StringBuilder matrizLinha = new StringBuilder(verticeLinha.getIdentificador() + " ");
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
 
-                if (arestaOrigemDestino!= null) {
-                    if (Boolean.TRUE.equals(arestaOrigemDestino.getDirigida())) {
+            vertices.forEach(verticeColuna -> {
+                boolean existeLigacao;
 
-                    } else {
-
-                    }
+                if (verticeLinha.equals(verticeColuna)) {
+                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna));
                 } else {
-                    matriz.add("0 ");
+                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeColuna) || a.getVerticeDestino().equals(verticeColuna));
+                }
+
+                if (existeLigacao) {
+                    matrizLinha.append("1 ");
+                } else {
+                    matrizLinha.append("0 ");
+                }
+            });
+
+            matriz.add(matrizLinha);
+        });
+
+        /*for (Vertice verticeLinha: vertices) {
+            StringBuilder matrizLinha = new StringBuilder(verticeLinha.getIdentificador() + " ");
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
+
+            for (Vertice verticeColuna: vertices) {
+                boolean existeLigacao;
+
+                if (verticeLinha.equals(verticeColuna)) {
+                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna));
+                } else {
+                    existeLigacao = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeColuna) || a.getVerticeDestino().equals(verticeColuna));
+                }
+
+                if (existeLigacao) {
+                    matrizLinha.append("1 ");
+                } else {
+                    matrizLinha.append("0 ");
                 }
             }
 
             matriz.add(matrizLinha);
-        }
+        }*/
 
         System.out.println(matriz);
-    }*/
+    }
 
     public String getIdentificador() {
         return identificador;
