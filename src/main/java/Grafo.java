@@ -4,11 +4,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Grafo {
-    private String identificador;
-    private Boolean isDirigido;
-    private TreeMap<Vertice, List<Aresta>> grafo;
+    private final String identificador;
+    private final Boolean isDirigido;
+    private final TreeMap<Vertice, List<Aresta>> grafo;
 
-    public Grafo(String identificador, Boolean isDirigido) {
+    public Grafo(final String identificador, final Boolean isDirigido) {
         this.grafo = new TreeMap<>();
         this.isDirigido = isDirigido;
         this.identificador = identificador;
@@ -40,6 +40,10 @@ public class Grafo {
 
     public Set<Vertice> obterTodosOsVertices() {
         return this.grafo.keySet();
+    }
+
+    public Vertice obterVerticePeloIdentificador(String identificador) {
+        return this.grafo.keySet().stream().filter(vertice -> vertice.getIdentificador().equals(identificador)).findFirst().orElse(null);
     }
 
     public Set<Aresta> obterTodasAsArestas() {
