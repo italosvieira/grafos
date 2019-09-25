@@ -1,13 +1,16 @@
 import java.util.Objects;
+import java.util.UUID;
 
 public class Vertice implements Comparable<Vertice> {
-    private String identificador;
+    private final UUID id;
+    private final String identificador;
 
     Vertice(String identificador) {
+        this.id = UUID.randomUUID();
         this.identificador = identificador;
     }
 
-    public String getIdentificador() {
+    String getIdentificador() {
         return identificador;
     }
 

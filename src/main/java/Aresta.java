@@ -1,41 +1,29 @@
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
+import java.util.UUID;
 
 public class Aresta {
-    private String identificador;
-    private Vertice verticeOrigem;
-    private Vertice verticeDestino;
+    private final UUID id;
+    private final String identificador;
+    private final Vertice verticeOrigem;
+    private final Vertice verticeDestino;
 
     Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino) {
+        this.id = UUID.randomUUID();
         this.identificador = identificador;
         this.verticeOrigem = verticeOrigem;
         this.verticeDestino = verticeDestino;
     }
 
-    public Set<Vertice> obterVertices() {
-        return new HashSet<>(Arrays.asList(this.verticeOrigem, this.verticeDestino));
-    }
-
-    public String getIdentificador() {
+    String getIdentificador() {
         return identificador;
     }
 
-    public Vertice getVerticeOrigem() {
+    Vertice getVerticeOrigem() {
         return verticeOrigem;
     }
 
-    public void setVerticeOrigem(Vertice verticeOrigem) {
-        this.verticeOrigem = verticeOrigem;
-    }
-
-    public Vertice getVerticeDestino() {
+    Vertice getVerticeDestino() {
         return verticeDestino;
-    }
-
-    public void setVerticeDestino(Vertice verticeDestino) {
-        this.verticeDestino = verticeDestino;
     }
 
     @Override

@@ -4,58 +4,122 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Grafo {
+    private final UUID id;
     private final String identificador;
     private final Boolean isDirigido;
     private final TreeMap<Vertice, List<Aresta>> grafo;
 
-    public Grafo(final String identificador, final Boolean isDirigido) {
+    Grafo(final String identificador, final Boolean isDirigido) {
+        this.id = UUID.randomUUID();
         this.grafo = new TreeMap<>();
         this.isDirigido = isDirigido;
         this.identificador = identificador;
     }
 
-    public void adicionarVertice(Vertice v) {
+    /**
+     *
+     *
+     * @param v Novo vértice a ser adicionado no grafo.
+     * @return void.
+     * @throws GrafoException aaaaa.
+     */
+    void adicionarVertice(final Vertice v) {
+        if (v == null) {
+            throw new GrafoException(""); //TODO
+        }
+
         this.grafo.putIfAbsent(v, new ArrayList<>());
     }
 
-    public void removerVertice(Vertice v) {
-        if (this.grafo.containsKey(v)) {
-            this.grafo.remove(v);
-
-            this.obterVerticesAdjacentes(v).forEach(verticeAdjacente -> {
-                this.grafo.get(verticeAdjacente).removeIf(a -> a.getVerticeOrigem().equals(v) || a.getVerticeDestino().equals(v));
-            });
+    /**
+     *
+     *
+     * @param v Vértice a ser removido no grafo.
+     * @return void
+     * @throws GrafoException aaaaa.
+     */
+    void removerVertice(Vertice v) {
+        if (v == null) {
+            throw new GrafoException(""); //TODO
         }
+
+        if (!this.grafo.containsKey(v)) {
+            throw new GrafoException(""); //TODO
+        }
+
+        this.grafo.remove(v);
+        this.obterVerticesAdjacentes(v).forEach(verticeAdjacente -> {
+            this.grafo.get(verticeAdjacente).removeIf(a -> a.getVerticeOrigem().equals(v) || a.getVerticeDestino().equals(v));
+        });
     }
 
-    public void adicionarAresta(Aresta a) {
+    /**
+     *
+     *
+     * @param a Vértice a ser removido no grafo.
+     * @return void
+     * @throws GrafoException aaaaa.
+     */
+    void adicionarAresta(Aresta a) {
+        this.validarAresta(a);
         this.grafo.get(a.getVerticeOrigem()).add(a);
         this.grafo.get(a.getVerticeDestino()).add(a);
     }
 
-    public void removerAresta(Aresta a) {
+    void removerAresta(Aresta a) {
+        this.validarAresta(a);
         this.grafo.get(a.getVerticeOrigem()).remove(a);
         this.grafo.get(a.getVerticeDestino()).remove(a);
     }
 
-    public Set<Vertice> obterTodosOsVertices() {
+    private void validarAresta(Aresta a) {
+        if (a == null) {
+            throw new GrafoException(""); //TODO
+        }
+
+        if (!this.grafo.containsKey(a.getVerticeOrigem())) {
+            throw new GrafoException(""); //TODO
+        }
+
+        if (!this.grafo.containsKey(a.getVerticeDestino())) {
+            throw new GrafoException(""); //TODO
+        }
+    }
+
+    private Set<Vertice> obterTodosOsVertices() {
         return this.grafo.keySet();
     }
 
-    public Vertice obterVerticePeloIdentificador(String identificador) {
+    String obterTodosOsVerticesAsString() {
+        StringJoiner s = new StringJoiner(" | ");
+        this.grafo.keySet().forEach(a -> s.add(a.getIdentificador()));
+        return s.toString();
+    }
+
+    Vertice obterVerticePeloIdentificador(String identificador) {
         return this.grafo.keySet().stream().filter(vertice -> vertice.getIdentificador().equals(identificador)).findFirst().orElse(null);
     }
 
-    public Set<Aresta> obterTodasAsArestas() {
+    Aresta obterArestaPeloIdentificador(String identificador) {
+        return this.obterTodasAsArestas().stream().filter(vertice -> vertice.getIdentificador().equals(identificador)).findFirst().orElse(null);
+    }
+
+    String obterTodasAsArestasAsString() {
+        StringJoiner s = new StringJoiner(" | ");
+        this.obterTodasAsArestas().forEach(a -> s.add(a.getIdentificador()));
+        return s.toString();
+    }
+
+    private Set<Aresta> obterTodasAsArestas() {
         return this.grafo.values().stream().flatMap(List::stream).collect(Collectors.toSet());
     }
 
-    public Boolean existeArestaEntreVertices(Vertice v1, Vertice v2) {
+    Boolean existeArestaEntreVertices(Vertice v1, Vertice v2) {
         return this.grafo.get(v1).stream().anyMatch(a -> a.getVerticeOrigem().equals(v1) && a.getVerticeDestino().equals(v2)) ||
                 this.grafo.get(v2).stream().anyMatch(a -> a.getVerticeOrigem().equals(v2) && a.getVerticeDestino().equals(v1));
     }
 
-    public Set<Vertice> obterVerticesAdjacentes(Vertice v) {
+    Set<Vertice> obterVerticesAdjacentes(Vertice v) {
         Set<Vertice> verticesAdjacentes = new HashSet<>();
 
         Set<Vertice> v1 = this.grafo.get(v).stream().map(Aresta::getVerticeOrigem).collect(Collectors.toSet());
@@ -69,12 +133,18 @@ public class Grafo {
         return verticesAdjacentes;
     }
 
-    public Integer obterGrauDoVertice(Vertice v) {
+    Integer obterGrauDoVertice(Vertice v) {
         return this.grafo.get(v).size();
     }
 
-    public void obterGrausMinimoMedioMaximo() {
+    void obterGrausMinimoMedioMaximo() {
         List<Integer> graus = this.grafo.values().stream().mapToInt(List::size).boxed().collect(Collectors.toList());
+
+        if (graus.isEmpty()) {
+            System.out.println("Não é possível gerar os graus sem arestas");
+            return;
+        }
+
         Set<Integer> setGraus = new HashSet<>(graus);
         StringJoiner sj = new StringJoiner(System.lineSeparator());
 
@@ -111,20 +181,24 @@ public class Grafo {
 
     }
 
-    public Boolean isGrafoConexo() {
-        if (this.grafo == null || this.obterTodosOsVertices().isEmpty()) {
+    Boolean isGrafoConexo() {
+        if (this.obterTodosOsVertices().isEmpty()) {
             return Boolean.FALSE;
         }
 
         return this.grafo.values().stream().noneMatch(List::isEmpty);
     }
 
-    public Boolean existeCaminhoDeEuler() {
-        Long quantidadeDeverticesDeGrauImpar = this.grafo.values().stream().mapToInt(List::size).filter(i -> i % 2 != 0).count();
+    Boolean existeCaminhoDeEuler() {
+        if (this.grafo.values().isEmpty()) {
+            return Boolean.FALSE;
+        }
+
+        long quantidadeDeverticesDeGrauImpar = this.grafo.values().stream().mapToInt(List::size).filter(i -> i % 2 != 0).count();
         return this.isGrafoConexo() && (quantidadeDeverticesDeGrauImpar == 0L || quantidadeDeverticesDeGrauImpar == 2L);
     }
 
-    public void exibirMatrizAdjacente() {
+    void exibirMatrizAdjacente() {
         if (Boolean.TRUE.equals(this.isDirigido)) {
             this.exibirMatrizAdjacenteGrafoDirigido();
         } else {
@@ -133,7 +207,29 @@ public class Grafo {
     }
 
     private void exibirMatrizAdjacenteGrafoDirigido() {
-        //TODO
+        StringJoiner matriz = new StringJoiner(System.lineSeparator());
+        Set<Vertice> vertices = this.obterTodosOsVertices();
+
+        StringBuilder s1 = new StringBuilder("  ");
+        vertices.forEach(v -> s1.append(v.getIdentificador()).append(" "));
+        matriz.add(s1);
+
+        vertices.forEach(verticeLinha -> {
+            StringBuilder matrizLinha = new StringBuilder(verticeLinha.getIdentificador() + " ");
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
+
+            vertices.forEach(verticeColuna -> {
+                if (arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna))) {
+                    matrizLinha.append("1 ");
+                } else {
+                    matrizLinha.append("0 ");
+                }
+            });
+
+            matriz.add(matrizLinha);
+        });
+
+        System.out.println(matriz);
     }
 
     private void exibirMatrizAdjacenteGrafoNaoDirigido() {
@@ -168,10 +264,6 @@ public class Grafo {
         });
 
         System.out.println(matriz);
-    }
-
-    public String getIdentificador() {
-        return identificador;
     }
 
     @Override

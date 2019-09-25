@@ -1,0 +1,20 @@
+{
+  "identificador": "string",
+  "isDirigido": "boolean",
+  "grafo": {
+    "key": {
+      "identificador": "string"
+    },
+    "value": [
+      {
+        "identificador": "string",
+        "verticeOrigem": {
+          "identificador": "string"
+        },
+        "verticeDestino": {
+          "identificador": "string"
+        }
+      }
+    ]
+  }
+}
