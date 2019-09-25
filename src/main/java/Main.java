@@ -20,7 +20,7 @@ public class Main {
                 case "rmAresta": removerAresta(g, scanner); break;
                 case "graus": g.obterGrausMinimoMedioMaximo(); break;
                 case "matriz": g.exibirMatrizAdjacente(); break;
-                case "euler": g.existeCaminhoDeEuler(); break;
+                case "euler": existeCaminhoDeEuler(g); break;
                 case "existeVertice": existeArestaEntreVertices(g, scanner); break;
                 case "conexo": isConexo(g); break;
                 case "grauVertice": exibeGrauDoVertice(g, scanner); break;
@@ -33,18 +33,18 @@ public class Main {
 
     private static void imprimirOpcoes() {
         LOGGER.info("Possiveis commandos:\n" +
-                    "addVertice     Adiciona um novo vértice.\n" +
-                    "rmVertice     Remove um vértice.\n" +
-                    "addAresta      Adiciona uma nova aresta.\n" +
-                    "rmAresta      Remove uma aresta.\n" +
-                    "graus      Mostra o grau mínimo, médio e máximo.\n" +
-                    "matriz      Mostra a matriz adjacente.\n" +
-                    "euler      Mostra se existe caminho de euler.\n" +
-                    "existeVertice      Mostra se existe vértice entre arestas.\n" +
-                    "conexo      Mostra se o grafo é conexo.\n" +
-                    "grauVertice      Mostra o grau de um determinado vérrtice.\n" +
-                    "verticeAdjacente      Mostra os vértices adjacentes a um determinado vérrtice.\n" +
-                    "exit           Finaliza a aplicação.");
+                    "addVertice             Adiciona um novo vértice.\n" +
+                    "rmVertice              Remove um vértice.\n" +
+                    "addAresta              Adiciona uma nova aresta.\n" +
+                    "rmAresta               Remove uma aresta.\n" +
+                    "graus                  Mostra o grau mínimo, médio e máximo.\n" +
+                    "matriz                 Mostra a matriz adjacente.\n" +
+                    "euler                  Mostra se existe caminho de euler.\n" +
+                    "existeVertice          Mostra se existe vértice entre arestas.\n" +
+                    "conexo                 Mostra se o grafo é conexo.\n" +
+                    "grauVertice            Mostra o grau de um determinado vérrtice.\n" +
+                    "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
+                    "exit                   Finaliza a aplicação.");
     }
 
     private static Grafo adicionarGrafo(Scanner scanner) {
@@ -126,9 +126,17 @@ public class Main {
     private static void exibeVerticesAdjacentes(Grafo g, Scanner scanner) {
         LOGGER.info("Vértices já existentes: " + g.obterTodosOsVerticesAsString());
 
-        LOGGER.info("Digite o identificador do vértice que deseja saber o grau:");
+        LOGGER.info("Digite o identificador do vértice que deseja saber os vértices adjacentes:");
         Set<Vertice> verticesAdjacentes = g.obterVerticesAdjacentes(g.obterVerticePeloIdentificador(scanner.next()));
 
         verticesAdjacentes.forEach(v -> LOGGER.info(v.getIdentificador()));
+    }
+
+    private static void existeCaminhoDeEuler(Grafo g) {
+        if (Boolean.TRUE.equals(g.existeCaminhoDeEuler())) {
+            LOGGER.info("Sim, existe caminho de euler.");
+        } else {
+            LOGGER.info("Não existe caminho de euler.");
+        }
     }
 }
