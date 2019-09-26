@@ -1,5 +1,10 @@
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -25,6 +30,7 @@ public class Main {
                 case "conexo": isConexo(g); break;
                 case "grauVertice": exibeGrauDoVertice(g, scanner); break;
                 case "verticeAdjacente": exibeVerticesAdjacentes(g, scanner); break;
+                case "export": export(g); break;
                 case "exit": System.exit(0);
                 default: break;
             }
@@ -48,6 +54,12 @@ public class Main {
     }
 
     private static Grafo adicionarGrafo(Scanner scanner) {
+        LOGGER.info("Deseja importar um arquivo(true) ou criar o grafo em memória(false)?");
+
+        if (Boolean.TRUE.equals(scanner.nextBoolean())) {
+            return imports();
+        }
+
         LOGGER.info("Digite o identificador do grafo e depois se é dirigido ou não (true ou false):");
         return new Grafo(scanner.next(), scanner.nextBoolean());
     }
@@ -138,5 +150,31 @@ public class Main {
         } else {
             LOGGER.info("Não existe caminho de euler.");
         }
+    }
+
+    private static void export(Grafo g) {
+        try {
+            getObjectMapper().writeValue(new File("resultado.json"), g);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+    }
+
+    private static Grafo imports() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            getObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            return mapper.readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream("grafo.json"), new TypeReference<Grafo>() {});
+        } catch (Exception e) {
+            LOGGER.error("Não foi possível ler o arquivo.", e);
+            System.exit(0);
+            return null;
+        }
+    }
+
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return mapper;
     }
 }

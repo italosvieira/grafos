@@ -1,18 +1,27 @@
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Grafo {
-    private final UUID id;
-    private final String identificador;
-    private final Boolean isDirigido;
-    private final TreeMap<Vertice, List<Aresta>> grafo;
+public class Grafo implements Serializable {
 
-    Grafo(final String identificador, final Boolean isDirigido) {
+    @JsonIgnore
+    private final UUID id;
+    private String identificador;
+    private Boolean dirigido;
+    private TreeMap<Vertice, List<Aresta>> grafo;
+
+    Grafo() {
+        this.id = UUID.randomUUID();
+    }
+
+    Grafo(final String identificador, final Boolean dirigido) {
         this.id = UUID.randomUUID();
         this.grafo = new TreeMap<>();
-        this.isDirigido = isDirigido;
+        this.dirigido = dirigido;
         this.identificador = identificador;
     }
 
@@ -199,7 +208,7 @@ public class Grafo {
     }
 
     void exibirMatrizAdjacente() {
-        if (Boolean.TRUE.equals(this.isDirigido)) {
+        if (Boolean.TRUE.equals(this.dirigido)) {
             this.exibirMatrizAdjacenteGrafoDirigido();
         } else {
             this.exibirMatrizAdjacenteGrafoNaoDirigido();
@@ -264,6 +273,30 @@ public class Grafo {
         });
 
         System.out.println(matriz);
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
+    public Boolean getDirigido() {
+        return dirigido;
+    }
+
+    public void setDirigido(Boolean dirigido) {
+        this.dirigido = dirigido;
+    }
+
+    public TreeMap<Vertice, List<Aresta>> getGrafo() {
+        return grafo;
+    }
+
+    public void setGrafo(TreeMap<Vertice, List<Aresta>> grafo) {
+        this.grafo = grafo;
     }
 
     @Override

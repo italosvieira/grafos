@@ -1,19 +1,19 @@
 {
-  "identificador": "string",
-  "isDirigido": "boolean",
-  "grafo": {
-    "key": {
-      "identificador": "string"
-    },
-    "value": [
+  "identificador":"g1",
+  "dirigido":false,
+  "grafo":{
+    "v1":[
       {
-        "identificador": "string",
-        "verticeOrigem": {
-          "identificador": "string"
-        },
-        "verticeDestino": {
-          "identificador": "string"
-        }
+        "identificador":"a1",
+        "verticeOrigem":"v1",
+        "verticeDestino":"v2"
+      }
+    ],
+    "v2":[
+      {
+        "identificador":"a1",
+        "verticeOrigem":"v1",
+        "verticeDestino":"v2"
       }
     ]
   }

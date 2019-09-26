@@ -1,11 +1,20 @@
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Aresta {
+public class Aresta implements Serializable {
+
+    @JsonIgnore
     private final UUID id;
-    private final String identificador;
-    private final Vertice verticeOrigem;
-    private final Vertice verticeDestino;
+    private String identificador;
+    private Vertice verticeOrigem;
+    private Vertice verticeDestino;
+
+    Aresta() {
+        this.id = UUID.randomUUID();
+    }
 
     Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino) {
         this.id = UUID.randomUUID();
@@ -24,6 +33,18 @@ public class Aresta {
 
     Vertice getVerticeDestino() {
         return verticeDestino;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
+    }
+
+    public void setVerticeOrigem(Vertice verticeOrigem) {
+        this.verticeOrigem = verticeOrigem;
+    }
+
+    public void setVerticeDestino(Vertice verticeDestino) {
+        this.verticeDestino = verticeDestino;
     }
 
     @Override
