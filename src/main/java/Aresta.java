@@ -2,7 +2,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.UUID; 
 
 public class Aresta implements Serializable {
 
