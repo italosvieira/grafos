@@ -12,17 +12,19 @@ public class Grafo implements Serializable {
     private final UUID id;
     private String identificador;
     private Boolean dirigido;
+    private Boolean ponderado;
     private TreeMap<Vertice, List<Aresta>> grafo;
 
     Grafo() {
         this.id = UUID.randomUUID();
     }
 
-    Grafo(final String identificador, final Boolean dirigido) {
+    Grafo(final String identificador, final Boolean dirigido, final Boolean ponderado) {
         this.id = UUID.randomUUID();
         this.grafo = new TreeMap<>();
-        this.dirigido = dirigido;
         this.identificador = identificador;
+        this.dirigido = dirigido;
+        this.ponderado = ponderado;
     }
 
     /**
@@ -320,6 +322,14 @@ public class Grafo implements Serializable {
 
     public void setGrafo(TreeMap<Vertice, List<Aresta>> grafo) {
         this.grafo = grafo;
+    }
+
+    public Boolean getPonderado() {
+        return ponderado;
+    }
+
+    public void setPonderado(Boolean ponderado) {
+        this.ponderado = ponderado;
     }
 
     @Override

@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
-import java.io.File; 
+import java.io.File;
+import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -60,8 +61,16 @@ public class Main {
             return imports();
         }
 
-        LOGGER.info("Digite o identificador do grafo e depois se é dirigido ou não (true ou false):");
-        return new Grafo(scanner.next(), scanner.nextBoolean());
+        LOGGER.info("Digite o identificador do grafo:");
+        String identificador = scanner.next();
+
+        LOGGER.info("Digite se o grafo é dirigido ou não(true ou false):");
+        Boolean dirigido = scanner.nextBoolean();
+
+        LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
+        Boolean ponderado = scanner.nextBoolean();
+
+        return new Grafo(identificador, dirigido, ponderado);
     }
 
     private static void adicionarVertice(Grafo g, Scanner scanner) {
@@ -88,8 +97,21 @@ public class Main {
             return;
         }
 
+        BigDecimal peso = null;
+
+        if (Boolean.TRUE.equals(g.getPonderado())) {
+            LOGGER.info("Digite o peso da aresta:");
+
+            try {
+                peso = new BigDecimal(scanner.next());
+            } catch (Exception e) {
+                LOGGER.info("Erro ao converter o peso para bigdecimal. Peso inválido.");
+                return;
+            }
+        }
+
         LOGGER.info("Digite o identificador da nova aresta:");
-        g.adicionarAresta(new Aresta(scanner.next(), verticeOrigem, verticeDestino));
+        g.adicionarAresta(new Aresta(scanner.next(), verticeOrigem, verticeDestino, peso));
     }
 
     private static void removerVertice(Grafo g, Scanner scanner) {

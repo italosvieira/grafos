@@ -20,3 +20,4 @@
 
 # Backlog
 * [x] Ajutar isConexo, fazer busca em profundidade.
+* [x] Fazer ajustes para grafo ponderado.
