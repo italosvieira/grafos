@@ -17,3 +17,6 @@
 * [X] 3 - Adicionar uma funcionalidade na solução adotada para identificar a existência de um caminho de Euler.
 ##
 * [x] 4 - Criar um padrão para entrada de dados a partir da leitura de um arquivo para geração do grafo.
+
+# Backlog
+* [x] Ajutar isConexo, fazer busca em profundidade.

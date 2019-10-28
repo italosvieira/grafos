@@ -195,7 +195,30 @@ public class Grafo implements Serializable {
             return Boolean.FALSE;
         }
 
-        return this.grafo.values().stream().noneMatch(List::isEmpty);
+        Set<String> verticesVisitados = new HashSet<>();
+        Map.Entry<Vertice, List<Aresta>> firstEntry = this.grafo.firstEntry();
+
+        this.buscaEmProfundidade(verticesVisitados, firstEntry.getKey(), firstEntry.getValue());
+
+        return verticesVisitados.containsAll(this.grafo.keySet().stream()
+                                                                .map(Vertice::getIdentificador)
+                                                                .collect(Collectors.toSet()));
+    }
+
+    private void buscaEmProfundidade(Set<String> verticesVisitados, Vertice vertice, List<Aresta> arestas) {
+        //Se o vértice já foi visitado retorna.
+        if (verticesVisitados.contains(vertice.getIdentificador())) {
+            return;
+        }
+
+        //Marca o vértice atual como visitado.
+        verticesVisitados.add(vertice.getIdentificador());
+
+        //Chama recursivamente a busca em profundidade para cada vértice de origem e destino.
+        arestas.forEach(a -> {
+            buscaEmProfundidade(verticesVisitados, a.getVerticeOrigem(), this.grafo.get(a.getVerticeOrigem()));
+            buscaEmProfundidade(verticesVisitados, a.getVerticeDestino(), this.grafo.get(a.getVerticeDestino()));
+        });
     }
 
     Boolean existeCaminhoDeEuler() {
