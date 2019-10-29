@@ -4,9 +4,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+
 public class Grafo implements Serializable {
+
+    private final static Logger LOGGER = Logger.getLogger(Grafo.class);
+    private static final long serialVersionUID = -6977015641015205734L;
 
     @JsonIgnore
     private final UUID id;
@@ -203,8 +209,8 @@ public class Grafo implements Serializable {
         this.buscaEmProfundidade(verticesVisitados, firstEntry.getKey(), firstEntry.getValue());
 
         return verticesVisitados.containsAll(this.grafo.keySet().stream()
-                                                                .map(Vertice::getIdentificador)
-                                                                .collect(Collectors.toSet()));
+                .map(Vertice::getIdentificador)
+                .collect(Collectors.toSet()));
     }
 
     private void buscaEmProfundidade(Set<String> verticesVisitados, Vertice vertice, List<Aresta> arestas) {
@@ -298,6 +304,77 @@ public class Grafo implements Serializable {
         });
 
         System.out.println(matriz);
+    }
+
+    private Integer obterNumeroDeVertices() {
+        return this.grafo.keySet().size();
+    }
+
+    public Boolean[][] obterMatrizAdjacente() {
+        /* Vector<Vector<Boolean>> v = new Vector<Vector<Boolean>>(); */
+        Set<Vertice> vertices = this.obterTodosOsVertices();
+        Boolean[][] matriz = new Boolean[vertices.size()][vertices.size()];
+
+        /*for (int i = 0; i < numeroDeVertices; i++) {
+            for (int j = 0; j < numeroDeVertices; j++) {
+
+            }
+        }*/
+
+        /*int countColuna;
+        int countLinha = 0;
+
+        for (Vertice linha: vertices) {
+            countColuna = 0;
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(linha);
+
+            for (Vertice coluna: vertices) {
+                countColuna++;
+                matriz[countLinha][countColuna] = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(linha) && a.getVerticeDestino().equals(coluna));
+            }
+
+            countLinha++;
+        }*/
+
+        AtomicInteger i = new AtomicInteger(0);
+
+        vertices.forEach(verticeLinha -> {
+            AtomicInteger j = new AtomicInteger(0);
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
+
+            vertices.forEach(verticeColuna -> matriz[i.getAndIncrement()][j.getAndIncrement()] = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna)));
+        });
+
+        imprimeMatriz(matriz);
+
+        return matriz;
+    }
+
+    // Algoritimo de warshall. Esse algoritimo utiliza a matriz de acessibilidade
+    // para gerar uma matriz de acessibilidade completa.
+    public void exibirMatrizDeAcessibilidade() {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+        Boolean[][] matriz = this.obterMatrizAdjacente();
+
+        for (int k = 0; k < numeroDeVertices; k++) {
+            for (int i = 0; i < numeroDeVertices; i++) {
+                for (int j = 0; j < numeroDeVertices; j++) {
+                    matriz[i][j] = matriz[i][j] && (matriz[i][k] || matriz[k][j]);
+                }
+            }
+        }
+
+        this.imprimeMatriz(matriz);
+    }
+
+    private void imprimeMatriz(Boolean[][] matriz) {
+        Arrays.stream(matriz).forEach(
+                (row) -> {
+                    LOGGER.info("[");
+                    Arrays.stream(row).forEach((el) -> LOGGER.info(" " + Boolean.compare(el, Boolean.TRUE) + " "));
+                    LOGGER.info("]");
+                }
+        );
     }
 
     public String getIdentificador() {

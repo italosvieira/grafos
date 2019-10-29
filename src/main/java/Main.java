@@ -32,6 +32,7 @@ public class Main {
                 case "grauVertice": exibeGrauDoVertice(g, scanner); break;
                 case "verticeAdjacente": exibeVerticesAdjacentes(g, scanner); break;
                 case "export": export(g); break;
+                case "acessibilidade": exibeMatrizDeAcessibilidade(g); break;
                 case "exit": System.exit(0);
                 default: break;
             }
@@ -51,6 +52,7 @@ public class Main {
                     "conexo                 Mostra se o grafo é conexo.\n" +
                     "grauVertice            Mostra o grau de um determinado vérrtice.\n" +
                     "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
+                    "acessibilidade         Exibe a matriz de acessibilidade.\n" +
                     "exit                   Finaliza a aplicação.");
     }
 
@@ -198,5 +200,9 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         return mapper;
+    }
+
+    private static void exibeMatrizDeAcessibilidade(Grafo g) {
+        g.obterMatrizAdjacente();
     }
 }
