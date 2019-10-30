@@ -203,6 +203,14 @@ public class Main {
     }
 
     private static void exibeMatrizDeAcessibilidade(Grafo g) {
-        g.obterMatrizAdjacente();
+        /*g.adicionarVertice(new Vertice("v1"));
+        g.adicionarVertice(new Vertice("v2"));
+        g.adicionarVertice(new Vertice("v3"));
+        g.adicionarVertice(new Vertice("v4"));
+        g.adicionarAresta(new Aresta("a1", g.obterVerticePeloIdentificador("v1"), g.obterVerticePeloIdentificador("v4"), null));
+        g.adicionarAresta(new Aresta("a2", g.obterVerticePeloIdentificador("v4"), g.obterVerticePeloIdentificador("v1"), null));
+        g.adicionarAresta(new Aresta("a3", g.obterVerticePeloIdentificador("v2"), g.obterVerticePeloIdentificador("v4"), null));
+        g.adicionarAresta(new Aresta("a4", g.obterVerticePeloIdentificador("v2"), g.obterVerticePeloIdentificador("v3"), null));*/
+        g.exibirMatrizDeAcessibilidade();
     }
 }

@@ -7,11 +7,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
-
 public class Grafo implements Serializable {
 
-    private final static Logger LOGGER = Logger.getLogger(Grafo.class);
     private static final long serialVersionUID = -6977015641015205734L;
 
     @JsonIgnore
@@ -311,30 +308,8 @@ public class Grafo implements Serializable {
     }
 
     public Boolean[][] obterMatrizAdjacente() {
-        /* Vector<Vector<Boolean>> v = new Vector<Vector<Boolean>>(); */
         Set<Vertice> vertices = this.obterTodosOsVertices();
         Boolean[][] matriz = new Boolean[vertices.size()][vertices.size()];
-
-        /*for (int i = 0; i < numeroDeVertices; i++) {
-            for (int j = 0; j < numeroDeVertices; j++) {
-
-            }
-        }*/
-
-        /*int countColuna;
-        int countLinha = 0;
-
-        for (Vertice linha: vertices) {
-            countColuna = 0;
-            List<Aresta> arestasDoVerticeLinha = this.grafo.get(linha);
-
-            for (Vertice coluna: vertices) {
-                countColuna++;
-                matriz[countLinha][countColuna] = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(linha) && a.getVerticeDestino().equals(coluna));
-            }
-
-            countLinha++;
-        }*/
 
         AtomicInteger i = new AtomicInteger(0);
 
@@ -342,10 +317,9 @@ public class Grafo implements Serializable {
             AtomicInteger j = new AtomicInteger(0);
             List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
 
-            vertices.forEach(verticeColuna -> matriz[i.getAndIncrement()][j.getAndIncrement()] = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna)));
+            vertices.forEach(verticeColuna -> matriz[i.get()][j.getAndIncrement()] = arestasDoVerticeLinha.stream().anyMatch(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna)));
+            i.getAndIncrement();
         });
-
-        imprimeMatriz(matriz);
 
         return matriz;
     }
@@ -359,7 +333,7 @@ public class Grafo implements Serializable {
         for (int k = 0; k < numeroDeVertices; k++) {
             for (int i = 0; i < numeroDeVertices; i++) {
                 for (int j = 0; j < numeroDeVertices; j++) {
-                    matriz[i][j] = matriz[i][j] && (matriz[i][k] || matriz[k][j]);
+                    matriz[i][j] = matriz[i][j] || (matriz[i][k] && matriz[k][j]);
                 }
             }
         }
@@ -368,13 +342,15 @@ public class Grafo implements Serializable {
     }
 
     private void imprimeMatriz(Boolean[][] matriz) {
-        Arrays.stream(matriz).forEach(
-                (row) -> {
-                    LOGGER.info("[");
-                    Arrays.stream(row).forEach((el) -> LOGGER.info(" " + Boolean.compare(el, Boolean.TRUE) + " "));
-                    LOGGER.info("]");
-                }
-        );
+        Arrays.stream(matriz).forEach(row -> {
+            System.out.print("[");
+            Arrays.stream(row).forEach((b) -> System.out.print(" " + this.converteBooleanParaBinario(b) + " "));
+            System.out.println("]");
+        });
+    }
+
+    private String converteBooleanParaBinario(Boolean b) {
+        return Boolean.TRUE.equals(b) ? "1" : "0";
     }
 
     public String getIdentificador() {
