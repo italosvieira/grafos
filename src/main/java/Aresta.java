@@ -12,13 +12,13 @@ public class Aresta implements Serializable {
     private String identificador;
     private Vertice verticeOrigem;
     private Vertice verticeDestino;
-    private BigDecimal peso;
+    private Integer peso;
 
     Aresta() {
         this.id = UUID.randomUUID();
     }
 
-    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino, BigDecimal peso) {
+    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino, Integer peso) {
         this.id = UUID.randomUUID();
         this.identificador = identificador;
         this.verticeOrigem = verticeOrigem;
@@ -48,6 +48,10 @@ public class Aresta implements Serializable {
 
     public void setVerticeDestino(Vertice verticeDestino) {
         this.verticeDestino = verticeDestino;
+    }
+
+    public Integer getPeso() {
+        return peso;
     }
 
     @Override

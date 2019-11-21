@@ -33,6 +33,7 @@ public class Main {
                 case "verticeAdjacente": exibeVerticesAdjacentes(g, scanner); break;
                 case "export": export(g); break;
                 case "acessibilidade": exibeMatrizDeAcessibilidade(g); break;
+                case "bellmanFord": bellmanFord(g, scanner); break;
                 case "exit": System.exit(0);
                 default: break;
             }
@@ -53,6 +54,7 @@ public class Main {
                     "grauVertice            Mostra o grau de um determinado vérrtice.\n" +
                     "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
                     "acessibilidade         Exibe a matriz de acessibilidade.\n" +
+                    "bellmanFord            Exibe a matriz de menores caminhos.\n" +
                     "exit                   Finaliza a aplicação.");
     }
 
@@ -99,13 +101,13 @@ public class Main {
             return;
         }
 
-        BigDecimal peso = null;
+        Integer peso = null;
 
         if (Boolean.TRUE.equals(g.getPonderado())) {
             LOGGER.info("Digite o peso da aresta:");
 
             try {
-                peso = new BigDecimal(scanner.next());
+                peso = Integer.valueOf(scanner.next());
             } catch (Exception e) {
                 LOGGER.info("Erro ao converter o peso para bigdecimal. Peso inválido.");
                 return;
@@ -203,14 +205,11 @@ public class Main {
     }
 
     private static void exibeMatrizDeAcessibilidade(Grafo g) {
-        /*g.adicionarVertice(new Vertice("v1"));
-        g.adicionarVertice(new Vertice("v2"));
-        g.adicionarVertice(new Vertice("v3"));
-        g.adicionarVertice(new Vertice("v4"));
-        g.adicionarAresta(new Aresta("a1", g.obterVerticePeloIdentificador("v1"), g.obterVerticePeloIdentificador("v4"), null));
-        g.adicionarAresta(new Aresta("a2", g.obterVerticePeloIdentificador("v4"), g.obterVerticePeloIdentificador("v1"), null));
-        g.adicionarAresta(new Aresta("a3", g.obterVerticePeloIdentificador("v2"), g.obterVerticePeloIdentificador("v4"), null));
-        g.adicionarAresta(new Aresta("a4", g.obterVerticePeloIdentificador("v2"), g.obterVerticePeloIdentificador("v3"), null));*/
         g.exibirMatrizDeAcessibilidade();
+    }
+
+    private static void bellmanFord(Grafo g, Scanner scanner) {
+        LOGGER.info("Vértices já existentes: " + g.obterTodosOsVerticesAsString());
+        g.bellmanFord(g.obterVerticePeloIdentificador(scanner.next()));
     }
 }

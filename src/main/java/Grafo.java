@@ -349,6 +349,57 @@ public class Grafo implements Serializable {
         });
     }
 
+    public void bellmanFord(Vertice origem) {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+
+        Integer[] distancia = new Integer[numeroDeVertices];
+        String[] predecessor = new String[numeroDeVertices];
+        LinkedList<Vertice> vertices = new LinkedList<>(this.grafo.keySet());
+        LinkedList<Aresta> arestas = new LinkedList<>(this.obterTodasAsArestas());
+
+        for (int i = 0; i < numeroDeVertices; i++) {
+            distancia[i] = Integer.MAX_VALUE;
+            predecessor[i] = "";
+        }
+
+        distancia[vertices.indexOf(origem)] = 0;
+
+        for (int i = 1; i < numeroDeVertices; ++i) {
+            for (Aresta aresta : arestas) {
+                Integer peso = aresta.getPeso();
+                int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
+                int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
+
+                if (distancia[indexVerticeOrigem] != Integer.MAX_VALUE && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+                    distancia[indexVerticeDestino] = distancia[indexVerticeOrigem] + peso;
+                }
+            }
+        }
+
+        //Checa por ciclo de pesos negativos.
+        for (Aresta aresta : arestas) {
+            Integer peso = aresta.getPeso();
+            int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
+            int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
+
+            if (distancia[indexVerticeOrigem] != Integer.MAX_VALUE && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+                System.out.println("Grafo contem ciclo negativo de pesos.");
+                return;
+            }
+        }
+
+        for (int i = 0; i < numeroDeVertices; ++i) {
+            System.out.println("Origem: " + origem.getIdentificador() + ". Destino: " + vertices.get(i) + ". Peso: " + distancia[i]);
+        }
+    }
+
+//    public void floydWarshall() {
+//        for(int k = 1;k <= n;k++)
+//            for(int i = 1;i <= n;i++)
+//                for(int j = 1;j <= n;j++)
+//                    distancia[i][j] = min(distancia[i][j], distancia[i][k] + distancia[k][j]);
+//    }
+
     private String converteBooleanParaBinario(Boolean b) {
         return Boolean.TRUE.equals(b) ? "1" : "0";
     }
