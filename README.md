@@ -21,3 +21,10 @@
 # Backlog
 * [x] Ajutar isConexo, fazer busca em profundidade.
 * [x] Fazer ajustes para grafo ponderado.
+* [x] Implementar o Algoritmo de Warshall
+* [ ] Implementar o Algoritmo de Dijkstra
+* [ ] Pesquisar e implementar o Algoritmo de Bellman-Ford
+* [ ] Pesquisar e implementar o Algoritmo de Floyd
+* [ ] Preparar uma apresentação comparando os resultados do algoritmo de Dijkstra; Bellman-Ford e Floyd.
+* [ ] Identificar quantos componentes conectados existem no grafo
+* [ ] Identificar quantos vértices existem no maior componente
