@@ -307,7 +307,7 @@ public class Grafo implements Serializable {
         return this.grafo.keySet().size();
     }
 
-    public Boolean[][] obterMatrizAdjacente() {
+    public Boolean[][] obterMatrizAdjacenteBooleana() {
         Set<Vertice> vertices = this.obterTodosOsVertices();
         Boolean[][] matriz = new Boolean[vertices.size()][vertices.size()];
 
@@ -328,7 +328,7 @@ public class Grafo implements Serializable {
     // para gerar uma matriz de acessibilidade completa.
     public void exibirMatrizDeAcessibilidade() {
         Integer numeroDeVertices = this.obterNumeroDeVertices();
-        Boolean[][] matriz = this.obterMatrizAdjacente();
+        Boolean[][] matriz = this.obterMatrizAdjacenteBooleana();
 
         for (int k = 0; k < numeroDeVertices; k++) {
             for (int i = 0; i < numeroDeVertices; i++) {
@@ -338,10 +338,10 @@ public class Grafo implements Serializable {
             }
         }
 
-        this.imprimeMatriz(matriz);
+        this.imprimeMatrizBooleana(matriz);
     }
 
-    private void imprimeMatriz(Boolean[][] matriz) {
+    private void imprimeMatrizBooleana(Boolean[][] matriz) {
         Arrays.stream(matriz).forEach(row -> {
             System.out.print("[");
             Arrays.stream(row).forEach((b) -> System.out.print(" " + this.converteBooleanParaBinario(b) + " "));
@@ -393,12 +393,65 @@ public class Grafo implements Serializable {
         }
     }
 
-//    public void floydWarshall() {
-//        for(int k = 1;k <= n;k++)
-//            for(int i = 1;i <= n;i++)
-//                for(int j = 1;j <= n;j++)
-//                    distancia[i][j] = min(distancia[i][j], distancia[i][k] + distancia[k][j]);
-//    }
+    public Integer[][] obterMatrizAdjacente() {
+        Set<Vertice> vertices = this.obterTodosOsVertices();
+        Integer[][] matriz = new Integer[vertices.size()][vertices.size()];
+
+        AtomicInteger i = new AtomicInteger(0);
+
+        vertices.forEach(verticeLinha -> {
+            AtomicInteger j = new AtomicInteger(0);
+            List<Aresta> arestasDoVerticeLinha = this.grafo.get(verticeLinha);
+
+            vertices.forEach(verticeColuna -> {
+                if (verticeLinha.equals(verticeColuna)) {
+                    matriz[i.get()][j.getAndIncrement()] = 0;
+                } else {
+                    if (Boolean.TRUE.equals(this.dirigido)) {
+                        Aresta aresta = arestasDoVerticeLinha.stream()
+                            .filter(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna))
+                            .findAny()
+                            .orElse(null);
+                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : 9999999;
+                    } else {
+                        Aresta aresta = arestasDoVerticeLinha.stream()
+                            .filter(a -> a.getVerticeOrigem().equals(verticeColuna) && a.getVerticeDestino().equals(verticeColuna))
+                            .findAny()
+                            .orElse(null);
+                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : 9999999;
+                    }
+                }
+            });
+            i.getAndIncrement();
+        });
+
+        return matriz;
+    }
+
+    // Algoritimo de warshall. Esse algoritimo utiliza a matriz de acessibilidade
+    // para gerar uma matriz de acessibilidade completa.
+    public void floydWarshall() {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+        Integer[][] matriz = this.obterMatrizAdjacente();
+
+        for (int k = 0; k < numeroDeVertices; k++) {
+            for (int i = 0; i < numeroDeVertices; i++) {
+                for (int j = 0; j < numeroDeVertices; j++) {
+                    matriz[i][j] = (matriz[i][j] > (matriz[i][k] + matriz[k][j])) ? (matriz[i][k] + matriz[k][j]) : matriz[i][j];
+                }
+            }
+        }
+
+        this.imprimeMatrizComPesos(matriz);
+    }
+
+    private void imprimeMatrizComPesos(Integer[][] matriz) {
+        Arrays.stream(matriz).forEach(row -> {
+            System.out.print("[");
+            Arrays.stream(row).forEach((b) -> System.out.print(" " + b + " "));
+            System.out.println("]");
+        });
+    }
 
     private String converteBooleanParaBinario(Boolean b) {
         return Boolean.TRUE.equals(b) ? "1" : "0";

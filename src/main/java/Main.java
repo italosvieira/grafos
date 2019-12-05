@@ -34,6 +34,7 @@ public class Main {
                 case "export": export(g); break;
                 case "acessibilidade": exibeMatrizDeAcessibilidade(g); break;
                 case "bellmanFord": bellmanFord(g, scanner); break;
+                case "floydWarshall": floydWarshall(g); break;
                 case "exit": System.exit(0);
                 default: break;
             }
@@ -55,6 +56,7 @@ public class Main {
                     "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
                     "acessibilidade         Exibe a matriz de acessibilidade.\n" +
                     "bellmanFord            Exibe a matriz de menores caminhos.\n" +
+                    "floydWarshall          Exibe a matriz de menores caminhos pelo algoritimo de floyd-warshall.\n" +
                     "exit                   Finaliza a aplicação.");
     }
 
@@ -211,5 +213,9 @@ public class Main {
     private static void bellmanFord(Grafo g, Scanner scanner) {
         LOGGER.info("Vértices já existentes: " + g.obterTodosOsVerticesAsString());
         g.bellmanFord(g.obterVerticePeloIdentificador(scanner.next()));
+    }
+
+    private static void floydWarshall(Grafo g) {
+        g.floydWarshall();
     }
 }
