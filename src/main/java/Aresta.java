@@ -1,7 +1,6 @@
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,13 +11,13 @@ public class Aresta implements Serializable {
     private String identificador;
     private Vertice verticeOrigem;
     private Vertice verticeDestino;
-    private Integer peso;
+    private Float peso;
 
     Aresta() {
         this.id = UUID.randomUUID();
     }
 
-    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino, Integer peso) {
+    Aresta(String identificador, Vertice verticeOrigem, Vertice verticeDestino, Float peso) {
         this.id = UUID.randomUUID();
         this.identificador = identificador;
         this.verticeOrigem = verticeOrigem;
@@ -50,7 +49,7 @@ public class Aresta implements Serializable {
         this.verticeDestino = verticeDestino;
     }
 
-    public Integer getPeso() {
+    public Float getPeso() {
         return peso;
     }
 

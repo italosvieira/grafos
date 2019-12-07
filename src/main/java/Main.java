@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -64,7 +63,7 @@ public class Main {
         LOGGER.info("Deseja importar um arquivo(true) ou criar o grafo em memória(false)?");
 
         if (Boolean.TRUE.equals(scanner.nextBoolean())) {
-            return imports();
+            return imports(scanner);
         }
 
         LOGGER.info("Digite o identificador do grafo:");
@@ -103,13 +102,13 @@ public class Main {
             return;
         }
 
-        Integer peso = null;
+        Float peso = null;
 
         if (Boolean.TRUE.equals(g.getPonderado())) {
             LOGGER.info("Digite o peso da aresta:");
 
             try {
-                peso = Integer.valueOf(scanner.next());
+                peso = Float.valueOf(scanner.next());
             } catch (Exception e) {
                 LOGGER.info("Erro ao converter o peso para bigdecimal. Peso inválido.");
                 return;
@@ -188,11 +187,14 @@ public class Main {
         }
     }
 
-    private static Grafo imports() {
+    private static Grafo imports(Scanner scanner) {
+        LOGGER.info("Possiveis arquivos: floydWarshall, bellmanFord.");
+        LOGGER.info("Digite o nome do arquivo:");
+
         try {
             ObjectMapper mapper = new ObjectMapper();
             getObjectMapper().setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-            return mapper.readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream("grafo.json"), new TypeReference<Grafo>() {});
+            return mapper.readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(scanner.next() + ".json"), new TypeReference<Grafo>() {});
         } catch (Exception e) {
             LOGGER.error("Não foi possível ler o arquivo.", e);
             System.exit(0);

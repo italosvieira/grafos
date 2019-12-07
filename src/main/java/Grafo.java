@@ -352,25 +352,25 @@ public class Grafo implements Serializable {
     public void bellmanFord(Vertice origem) {
         Integer numeroDeVertices = this.obterNumeroDeVertices();
 
-        Integer[] distancia = new Integer[numeroDeVertices];
+        Float[] distancia = new Float[numeroDeVertices];
         String[] predecessor = new String[numeroDeVertices];
         LinkedList<Vertice> vertices = new LinkedList<>(this.grafo.keySet());
         LinkedList<Aresta> arestas = new LinkedList<>(this.obterTodasAsArestas());
 
         for (int i = 0; i < numeroDeVertices; i++) {
-            distancia[i] = Integer.MAX_VALUE;
+            distancia[i] = Float.POSITIVE_INFINITY;
             predecessor[i] = "";
         }
 
-        distancia[vertices.indexOf(origem)] = 0;
+        distancia[vertices.indexOf(origem)] = (float) 0;
 
         for (int i = 1; i < numeroDeVertices; ++i) {
             for (Aresta aresta : arestas) {
-                Integer peso = aresta.getPeso();
+                Float peso = aresta.getPeso();
                 int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
                 int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
 
-                if (distancia[indexVerticeOrigem] != Integer.MAX_VALUE && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+                if (distancia[indexVerticeOrigem] != Float.POSITIVE_INFINITY && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
                     distancia[indexVerticeDestino] = distancia[indexVerticeOrigem] + peso;
                 }
             }
@@ -378,24 +378,24 @@ public class Grafo implements Serializable {
 
         //Checa por ciclo de pesos negativos.
         for (Aresta aresta : arestas) {
-            Integer peso = aresta.getPeso();
+            Float peso = aresta.getPeso();
             int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
             int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
 
-            if (distancia[indexVerticeOrigem] != Integer.MAX_VALUE && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+            if (distancia[indexVerticeOrigem] != Float.POSITIVE_INFINITY && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
                 System.out.println("Grafo contem ciclo negativo de pesos.");
                 return;
             }
         }
 
         for (int i = 0; i < numeroDeVertices; ++i) {
-            System.out.println("Origem: " + origem.getIdentificador() + ". Destino: " + vertices.get(i) + ". Peso: " + distancia[i]);
+            System.out.println("Origem: " + origem.getIdentificador() + ". Destino: " + vertices.get(i) + ". Peso: " + String.format("%.0f", distancia[i]));
         }
     }
 
-    public Integer[][] obterMatrizAdjacente() {
+    public Float[][] obterMatrizAdjacente() {
         Set<Vertice> vertices = this.obterTodosOsVertices();
-        Integer[][] matriz = new Integer[vertices.size()][vertices.size()];
+        Float[][] matriz = new Float[vertices.size()][vertices.size()];
 
         AtomicInteger i = new AtomicInteger(0);
 
@@ -405,20 +405,20 @@ public class Grafo implements Serializable {
 
             vertices.forEach(verticeColuna -> {
                 if (verticeLinha.equals(verticeColuna)) {
-                    matriz[i.get()][j.getAndIncrement()] = 0;
+                    matriz[i.get()][j.getAndIncrement()] = (float) 0;
                 } else {
                     if (Boolean.TRUE.equals(this.dirigido)) {
                         Aresta aresta = arestasDoVerticeLinha.stream()
                             .filter(a -> a.getVerticeOrigem().equals(verticeLinha) && a.getVerticeDestino().equals(verticeColuna))
                             .findAny()
                             .orElse(null);
-                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : 9999999;
+                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : Float.POSITIVE_INFINITY;
                     } else {
                         Aresta aresta = arestasDoVerticeLinha.stream()
                             .filter(a -> a.getVerticeOrigem().equals(verticeColuna) && a.getVerticeDestino().equals(verticeColuna))
                             .findAny()
                             .orElse(null);
-                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : 9999999;
+                        matriz[i.get()][j.getAndIncrement()] = aresta != null ? aresta.getPeso() : Float.POSITIVE_INFINITY;
                     }
                 }
             });
@@ -432,7 +432,7 @@ public class Grafo implements Serializable {
     // para gerar uma matriz de acessibilidade completa.
     public void floydWarshall() {
         Integer numeroDeVertices = this.obterNumeroDeVertices();
-        Integer[][] matriz = this.obterMatrizAdjacente();
+        Float[][] matriz = this.obterMatrizAdjacente();
 
         for (int k = 0; k < numeroDeVertices; k++) {
             for (int i = 0; i < numeroDeVertices; i++) {
@@ -445,10 +445,10 @@ public class Grafo implements Serializable {
         this.imprimeMatrizComPesos(matriz);
     }
 
-    private void imprimeMatrizComPesos(Integer[][] matriz) {
+    private void imprimeMatrizComPesos(Float[][] matriz) {
         Arrays.stream(matriz).forEach(row -> {
             System.out.print("[");
-            Arrays.stream(row).forEach((b) -> System.out.print(" " + b + " "));
+            Arrays.stream(row).forEach((b) -> System.out.print(" " + String.format("%.0f", b) + " "));
             System.out.println("]");
         });
     }
