@@ -25,6 +25,6 @@
 * [ ] Implementar o Algoritmo de Dijkstra
 * [x] Pesquisar e implementar o Algoritmo de Bellman-Ford
 * [x] Pesquisar e implementar o Algoritmo de Floyd
-* [ ] Preparar uma apresentação comparando os resultados do algoritmo de Dijkstra; Bellman-Ford e Floyd.
-* [ ] Identificar quantos componentes conectados existem no grafo
-* [ ] Identificar quantos vértices existem no maior componente
+* [x] Preparar uma apresentação comparando os resultados do algoritmo de Dijkstra; Bellman-Ford e Floyd.
+* [x] Identificar quantos componentes conectados existem no grafo
+* [x] Identificar quantos vértices existem no maior componente

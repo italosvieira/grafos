@@ -26,11 +26,6 @@ public class GeradorDeGrafoAleatorio {
             adicionarArestaEmVerticeAleatorioInvertido(g, qtdVertices, random, countAresta, i);
         }
 
-        /*if (qtdVertices % 2 != 0) {
-            *//*adicionarArestaEmVerticeAleatorio(g, qtdVertices, random, countAresta, random.nextInt(qtdVertices));
-            adicionarArestaEmVerticeAleatorio(g, qtdVertices, random, countAresta, random.nextInt(qtdVertices));*//*
-        }*/
-
         return g;
     }
 

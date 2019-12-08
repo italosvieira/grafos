@@ -34,6 +34,8 @@ public class Main {
                 case "warshall": warshall(g); break;
                 case "bellmanFord": bellmanFord(g, scanner); break;
                 case "floydWarshall": floydWarshall(g); break;
+                case "compararAlgoritimos": compararAlgoritimos(g); break;
+                case "identificarComponentesNoGrafo": identificarComponentesNoGrafo(g); break;
                 case "exit": System.exit(0);
                 default: break;
             }
@@ -42,27 +44,33 @@ public class Main {
 
     private static void imprimirOpcoes() {
         LOGGER.info("Possiveis commandos:\n" +
-                    "addVertice             Adiciona um novo vértice.\n" +
-                    "rmVertice              Remove um vértice.\n" +
-                    "addAresta              Adiciona uma nova aresta.\n" +
-                    "rmAresta               Remove uma aresta.\n" +
-                    "graus                  Mostra o grau mínimo, médio e máximo.\n" +
-                    "matriz                 Mostra a matriz adjacente.\n" +
-                    "euler                  Mostra se existe caminho de euler.\n" +
-                    "existeVertice          Mostra se existe vértice entre arestas.\n" +
-                    "conexo                 Mostra se o grafo é conexo.\n" +
-                    "grauVertice            Mostra o grau de um determinado vérrtice.\n" +
-                    "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
-                    "warshall               Exibe a matriz de acessibilidade pelo algoritimo de warshall.\n" +
-                    "bellmanFord            Exibe a matriz de menores caminhos.\n" +
-                    "floydWarshall          Exibe a matriz de menores caminhos pelo algoritimo de floyd-warshall.\n" +
-                    "exit                   Finaliza a aplicação.");
+                    "addVertice                       Adiciona um novo vértice.\n" +
+                    "rmVertice                        Remove um vértice.\n" +
+                    "addAresta                        Adiciona uma nova aresta.\n" +
+                    "rmAresta                         Remove uma aresta.\n" +
+                    "graus                            Mostra o grau mínimo, médio e máximo.\n" +
+                    "matriz                           Mostra a matriz adjacente.\n" +
+                    "euler                            Mostra se existe caminho de euler.\n" +
+                    "existeVertice                    Mostra se existe vértice entre arestas.\n" +
+                    "conexo                           Mostra se o grafo é conexo.\n" +
+                    "grauVertice                      Mostra o grau de um determinado vérrtice.\n" +
+                    "verticeAdjacente                 Mostra os vértices adjacentes a um determinado vérrtice.\n" +
+                    "warshall                         Exibe a matriz de acessibilidade pelo algoritimo de warshall.\n" +
+                    "bellmanFord                      Exibe a matriz de menores caminhos.\n" +
+                    "floydWarshall                    Exibe a matriz de menores caminhos pelo algoritimo de floyd-warshall.\n" +
+                    "compararAlgoritimos              Compara o tempo de execução dos algoritimos.\n" +
+                    "identificarComponentesNoGrafo    Compara o tempo de execução dos algoritimos.\n" +
+                    "exit                             Finaliza a aplicação.");
     }
 
     private static Grafo adicionarGrafo(Scanner scanner) {
-        LOGGER.info("Deseja importar um arquivo(true)?");
-
         if (Boolean.TRUE.equals(scanner.nextBoolean())) {
+            return imports(scanner);
+        }
+        return null;
+        /*LOGGER.info("Deseja importar um arquivo(true)?");
+
+        *//*if (Boolean.TRUE.equals(scanner.nextBoolean())) {
             return imports(scanner);
         }
 
@@ -78,12 +86,13 @@ public class Main {
             LOGGER.info("Digite a quantidade de vértices que deseja:");
             Integer qtdVertices = scanner.nextInt();
 
-            Grafo g = GeradorDeGrafoAleatorio.generate(isDirigido, isPonderado, qtdVertices);
+            Grafo g = GeradorDeGrafoAleatorio.generate(isDirigido, isPonderado, qtdVertices);*//*
+            Grafo g = GeradorDeGrafoAleatorio.generate(Boolean.TRUE, Boolean.TRUE, 100);
             LOGGER.info("O grafo gerado foi o: " + g.getIdentificador());
             return g;
-        }
+        *//*}*/
 
-        LOGGER.info("Digite o identificador do grafo:");
+        /*LOGGER.info("Digite o identificador do grafo:");
         String identificador = scanner.next();
 
         LOGGER.info("Digite se o grafo é dirigido ou não(true ou false):");
@@ -92,7 +101,7 @@ public class Main {
         LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
         Boolean ponderado = scanner.nextBoolean();
 
-        return new Grafo(identificador, dirigido, ponderado);
+        return new Grafo(identificador, dirigido, ponderado);*/
     }
 
     private static void adicionarVertice(Grafo g, Scanner scanner) {
@@ -205,7 +214,7 @@ public class Main {
     }
 
     private static Grafo imports(Scanner scanner) {
-        LOGGER.info("Possiveis arquivos: floydWarshall, bellmanFord.");
+        LOGGER.info("Possiveis arquivos: floydWarshall, bellmanFord, grafoDesconexo.");
         LOGGER.info("Digite o nome do arquivo:");
 
         try {
@@ -236,5 +245,13 @@ public class Main {
 
     private static void floydWarshall(Grafo g) {
         g.floydWarshall();
+    }
+
+    private static void compararAlgoritimos(Grafo g) {
+        g.compararAlgoritimos();
+    }
+
+    private static void identificarComponentesNoGrafo(Grafo g) {
+        g.identificarComponentesNoGrafo();
     }
 }

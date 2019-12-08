@@ -453,6 +453,135 @@ public class Grafo implements Serializable {
         });
     }
 
+    public void compararAlgoritimos() {
+        double floydWarshallSegundos = (double) this.floydWarshallBenchMark() / 1_000_000_000;
+        double warshallSegundos = (double) this.warshallBenchMark() / 1_000_000_000;
+        double bellmanFordSegundos = (double) this.bellmanFordBenchMark(this.grafo.firstKey()) / 1_000_000_000;
+
+        System.out.println("Tempo de execução Floyd-Warshall: "+floydWarshallSegundos+"s");
+        System.out.println("Tempo de execução Warshall: "+warshallSegundos+"s");
+        System.out.println("Tempo de execução Bellman-Ford: "+bellmanFordSegundos+"s");
+    }
+
+    private long floydWarshallBenchMark() {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+        Float[][] matriz = this.obterMatrizAdjacente();
+
+        long startTime = System.nanoTime();
+        for (int k = 0; k < numeroDeVertices; k++) {
+            for (int i = 0; i < numeroDeVertices; i++) {
+                for (int j = 0; j < numeroDeVertices; j++) {
+                    matriz[i][j] = (matriz[i][j] > (matriz[i][k] + matriz[k][j])) ? (matriz[i][k] + matriz[k][j]) : matriz[i][j];
+                }
+            }
+        }
+        return System.nanoTime() - startTime;
+    }
+
+    private long warshallBenchMark() {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+        Boolean[][] matriz = this.obterMatrizAdjacenteBooleana();
+
+        long startTime = System.nanoTime();
+        for (int k = 0; k < numeroDeVertices; k++) {
+            for (int i = 0; i < numeroDeVertices; i++) {
+                for (int j = 0; j < numeroDeVertices; j++) {
+                    matriz[i][j] = matriz[i][j] || (matriz[i][k] && matriz[k][j]);
+                }
+            }
+        }
+        return System.nanoTime() - startTime;
+    }
+
+    private long bellmanFordBenchMark(Vertice origem) {
+        Integer numeroDeVertices = this.obterNumeroDeVertices();
+
+        Float[] distancia = new Float[numeroDeVertices];
+        String[] predecessor = new String[numeroDeVertices];
+        LinkedList<Vertice> vertices = new LinkedList<>(this.grafo.keySet());
+        LinkedList<Aresta> arestas = new LinkedList<>(this.obterTodasAsArestas());
+
+        long startTime = System.nanoTime();
+        for (int i = 0; i < numeroDeVertices; i++) {
+            distancia[i] = Float.POSITIVE_INFINITY;
+            predecessor[i] = "";
+        }
+
+        distancia[vertices.indexOf(origem)] = (float) 0;
+
+        for (int i = 1; i < numeroDeVertices; ++i) {
+            for (Aresta aresta : arestas) {
+                Float peso = aresta.getPeso();
+                int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
+                int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
+
+                if (distancia[indexVerticeOrigem] != Float.POSITIVE_INFINITY && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+                    distancia[indexVerticeDestino] = distancia[indexVerticeOrigem] + peso;
+                }
+            }
+        }
+
+        //Checa por ciclo de pesos negativos.
+        for (Aresta aresta : arestas) {
+            Float peso = aresta.getPeso();
+            int indexVerticeOrigem = vertices.indexOf(aresta.getVerticeOrigem());
+            int indexVerticeDestino = vertices.indexOf(aresta.getVerticeDestino());
+
+            if (distancia[indexVerticeOrigem] != Float.POSITIVE_INFINITY && distancia[indexVerticeOrigem] + peso < distancia[indexVerticeDestino]) {
+                System.out.println("Bellman-Ford: Grafo contem ciclo negativo de pesos.");
+                return System.nanoTime() - startTime;
+            }
+        }
+        return System.nanoTime() - startTime;
+    }
+
+    public void identificarComponentesNoGrafo() {
+        Set<Vertice> todosOsVertices = new HashSet<>(this.obterTodosOsVertices());
+        Set<Vertice> todosOsVerticesParaRemocao = new HashSet<>(this.obterTodosOsVertices());
+
+        Set<Vertice> verticesVisitados = new HashSet<>();
+        Set<Vertice> verticesVisitadosIteracao = new HashSet<>();
+        Vertice vertice = this.grafo.firstEntry().getKey();
+        List<Aresta> arestas = this.grafo.firstEntry().getValue();
+        Map<Integer, Set<Vertice>> map = new HashMap<>();
+        int componentCount = 1;
+
+        while (!verticesVisitados.containsAll(todosOsVertices)) {
+            this.buscaEmProfundidadeIdentificarComponentes(verticesVisitados, vertice, arestas, verticesVisitadosIteracao);
+            todosOsVerticesParaRemocao.removeAll(verticesVisitados);
+
+            if (!todosOsVerticesParaRemocao.isEmpty()) {
+                vertice = todosOsVerticesParaRemocao.iterator().next();
+                arestas = this.obterArestasDoVertice(vertice);
+            }
+
+            map.put(componentCount, verticesVisitadosIteracao);
+
+            verticesVisitadosIteracao = new HashSet<>();
+            componentCount++;
+        }
+
+        System.out.println("Número de componentes no grafo: " + map.size());
+        map.forEach((key, value) -> System.out.println("Componente: " + key + ". Número de vértices: " + value.size() + ". Vértices: " + value));
+    }
+
+    private void buscaEmProfundidadeIdentificarComponentes(Set<Vertice> verticesVisitados, Vertice vertice, List<Aresta> arestas, Set<Vertice> verticesVisitadosIteracao) {
+        //Se o vértice já foi visitado retorna.
+        if (verticesVisitados.contains(vertice)) {
+            return;
+        }
+
+        //Marca o vértice atual como visitado.
+        verticesVisitados.add(vertice);
+        verticesVisitadosIteracao.add(vertice);
+
+        //Chama recursivamente a busca em profundidade para cada vértice de origem e destino.
+        arestas.forEach(a -> {
+            buscaEmProfundidadeIdentificarComponentes(verticesVisitados, a.getVerticeOrigem(), this.grafo.get(a.getVerticeOrigem()), verticesVisitadosIteracao);
+            buscaEmProfundidadeIdentificarComponentes(verticesVisitados, a.getVerticeDestino(), this.grafo.get(a.getVerticeDestino()), verticesVisitadosIteracao);
+        });
+    }
+
     public List<Aresta> obterArestasDoVertice(Vertice vertice) {
         return this.grafo.get(vertice);
     }
