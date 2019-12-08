@@ -326,7 +326,7 @@ public class Grafo implements Serializable {
 
     // Algoritimo de warshall. Esse algoritimo utiliza a matriz de acessibilidade
     // para gerar uma matriz de acessibilidade completa.
-    public void exibirMatrizDeAcessibilidade() {
+    public void warshall() {
         Integer numeroDeVertices = this.obterNumeroDeVertices();
         Boolean[][] matriz = this.obterMatrizAdjacenteBooleana();
 
@@ -451,6 +451,10 @@ public class Grafo implements Serializable {
             Arrays.stream(row).forEach((b) -> System.out.print(" " + String.format("%.0f", b) + " "));
             System.out.println("]");
         });
+    }
+
+    public List<Aresta> obterArestasDoVertice(Vertice vertice) {
+        return this.grafo.get(vertice);
     }
 
     private String converteBooleanParaBinario(Boolean b) {

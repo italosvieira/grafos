@@ -31,7 +31,7 @@ public class Main {
                 case "grauVertice": exibeGrauDoVertice(g, scanner); break;
                 case "verticeAdjacente": exibeVerticesAdjacentes(g, scanner); break;
                 case "export": export(g); break;
-                case "acessibilidade": exibeMatrizDeAcessibilidade(g); break;
+                case "warshall": warshall(g); break;
                 case "bellmanFord": bellmanFord(g, scanner); break;
                 case "floydWarshall": floydWarshall(g); break;
                 case "exit": System.exit(0);
@@ -53,17 +53,34 @@ public class Main {
                     "conexo                 Mostra se o grafo é conexo.\n" +
                     "grauVertice            Mostra o grau de um determinado vérrtice.\n" +
                     "verticeAdjacente       Mostra os vértices adjacentes a um determinado vérrtice.\n" +
-                    "acessibilidade         Exibe a matriz de acessibilidade.\n" +
+                    "warshall               Exibe a matriz de acessibilidade pelo algoritimo de warshall.\n" +
                     "bellmanFord            Exibe a matriz de menores caminhos.\n" +
                     "floydWarshall          Exibe a matriz de menores caminhos pelo algoritimo de floyd-warshall.\n" +
                     "exit                   Finaliza a aplicação.");
     }
 
     private static Grafo adicionarGrafo(Scanner scanner) {
-        LOGGER.info("Deseja importar um arquivo(true) ou criar o grafo em memória(false)?");
+        LOGGER.info("Deseja importar um arquivo(true)?");
 
         if (Boolean.TRUE.equals(scanner.nextBoolean())) {
             return imports(scanner);
+        }
+
+        LOGGER.info("Deseja gerar um grafo aleatório(true)? ou criar o grafo em memória(false)?");
+
+        if (Boolean.TRUE.equals(scanner.nextBoolean())) {
+            LOGGER.info("Digite se o grafo é dirigido ou não(true ou false):");
+            Boolean isDirigido = scanner.nextBoolean();
+
+            LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
+            Boolean isPonderado = scanner.nextBoolean();
+
+            LOGGER.info("Digite a quantidade de vértices que deseja:");
+            Integer qtdVertices = scanner.nextInt();
+
+            Grafo g = GeradorDeGrafoAleatorio.generate(isDirigido, isPonderado, qtdVertices);
+            LOGGER.info("O grafo gerado foi o: " + g.getIdentificador());
+            return g;
         }
 
         LOGGER.info("Digite o identificador do grafo:");
@@ -208,8 +225,8 @@ public class Main {
         return mapper;
     }
 
-    private static void exibeMatrizDeAcessibilidade(Grafo g) {
-        g.exibirMatrizDeAcessibilidade();
+    private static void warshall(Grafo g) {
+        g.warshall();
     }
 
     private static void bellmanFord(Grafo g, Scanner scanner) {
