@@ -64,13 +64,9 @@ public class Main {
     }
 
     private static Grafo adicionarGrafo(Scanner scanner) {
-        if (Boolean.TRUE.equals(scanner.nextBoolean())) {
-            return imports(scanner);
-        }
-        return null;
-        /*LOGGER.info("Deseja importar um arquivo(true)?");
+        LOGGER.info("Deseja importar um arquivo(true)?");
 
-        *//*if (Boolean.TRUE.equals(scanner.nextBoolean())) {
+        if (Boolean.TRUE.equals(scanner.nextBoolean())) {
             return imports(scanner);
         }
 
@@ -83,16 +79,18 @@ public class Main {
             LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
             Boolean isPonderado = scanner.nextBoolean();
 
+            LOGGER.info("As arestas podem ter peso negativo?:");
+            Boolean pesoNegativo = scanner.nextBoolean();
+
             LOGGER.info("Digite a quantidade de vértices que deseja:");
             Integer qtdVertices = scanner.nextInt();
 
-            Grafo g = GeradorDeGrafoAleatorio.generate(isDirigido, isPonderado, qtdVertices);*//*
-            Grafo g = GeradorDeGrafoAleatorio.generate(Boolean.TRUE, Boolean.TRUE, 100);
+            Grafo g = GeradorDeGrafoAleatorio.generate(isDirigido, isPonderado, qtdVertices, pesoNegativo);
             LOGGER.info("O grafo gerado foi o: " + g.getIdentificador());
             return g;
-        *//*}*/
+        }
 
-        /*LOGGER.info("Digite o identificador do grafo:");
+        LOGGER.info("Digite o identificador do grafo:");
         String identificador = scanner.next();
 
         LOGGER.info("Digite se o grafo é dirigido ou não(true ou false):");
@@ -101,7 +99,7 @@ public class Main {
         LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
         Boolean ponderado = scanner.nextBoolean();
 
-        return new Grafo(identificador, dirigido, ponderado);*/
+        return new Grafo(identificador, dirigido, ponderado);
     }
 
     private static void adicionarVertice(Grafo g, Scanner scanner) {
@@ -223,7 +221,7 @@ public class Main {
             return mapper.readValue(Thread.currentThread().getContextClassLoader().getResourceAsStream(scanner.next() + ".json"), new TypeReference<Grafo>() {});
         } catch (Exception e) {
             LOGGER.error("Não foi possível ler o arquivo.", e);
-            System.exit(0);
+            System.exit(1);
             return null;
         }
     }
