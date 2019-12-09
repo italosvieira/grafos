@@ -387,10 +387,13 @@ public class Grafo implements Serializable {
     }
 
     private static int minVertex (float [] dist, boolean [] v) {
-        float x = Integer.MAX_VALUE;
+        float x = Float.POSITIVE_INFINITY;
         int y = -1;
         for (int i = 0; i < dist.length; i++) {
-            if (!v[i] && dist[i]<x) {y=i; x=dist[i];}
+            if (!v[i] && dist[i] < x) {
+                y = i;
+                x = dist[i];
+            }
         }
         return y;
     }
@@ -644,6 +647,11 @@ public class Grafo implements Serializable {
 
         for (int i = 0; i < dist.length; i++) {
             final int next = minVertex(dist, visited);
+
+            if (next == -1) {
+                continue;
+            }
+
             visited[next] = true;
 
             List<Vertice> vertices1 = new ArrayList<>(this.obterArestasDoVertice(vertices.get(next)).stream().map(Aresta::getVerticeDestino).collect(Collectors.toSet()));

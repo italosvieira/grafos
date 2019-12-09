@@ -81,7 +81,7 @@ public class Main {
             LOGGER.info("Digite se o grafo é ponderado ou não(true ou false):");
             Boolean isPonderado = scanner.nextBoolean();
 
-            LOGGER.info("As arestas podem ter peso negativo?:");
+            LOGGER.info("Digite se as arestas podem ter peso negativo ou não(true ou false):");
             Boolean pesoNegativo = scanner.nextBoolean();
 
             LOGGER.info("Digite a quantidade de vértices que deseja:");
