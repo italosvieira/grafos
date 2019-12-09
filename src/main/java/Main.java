@@ -34,6 +34,7 @@ public class Main {
                 case "warshall": warshall(g); break;
                 case "bellmanFord": bellmanFord(g, scanner); break;
                 case "floydWarshall": floydWarshall(g); break;
+                case "dijkstra": dijkstra(g, scanner); break;
                 case "compararAlgoritimos": compararAlgoritimos(g); break;
                 case "identificarComponentesNoGrafo": identificarComponentesNoGrafo(g); break;
                 case "exit": System.exit(0);
@@ -58,6 +59,7 @@ public class Main {
                     "warshall                         Exibe a matriz de acessibilidade pelo algoritimo de warshall.\n" +
                     "bellmanFord                      Exibe a matriz de menores caminhos.\n" +
                     "floydWarshall                    Exibe a matriz de menores caminhos pelo algoritimo de floyd-warshall.\n" +
+                    "dijkstra                         Exibe os menores caminhos do vértice origem pelo algoritimo de dijkstra.\n" +
                     "compararAlgoritimos              Compara o tempo de execução dos algoritimos.\n" +
                     "identificarComponentesNoGrafo    Compara o tempo de execução dos algoritimos.\n" +
                     "exit                             Finaliza a aplicação.");
@@ -212,7 +214,7 @@ public class Main {
     }
 
     private static Grafo imports(Scanner scanner) {
-        LOGGER.info("Possiveis arquivos: floydWarshall, bellmanFord, grafoDesconexo.");
+        LOGGER.info("Possiveis arquivos: floydWarshall, bellmanFord, grafoDesconexo, dijkstra.");
         LOGGER.info("Digite o nome do arquivo:");
 
         try {
@@ -251,5 +253,10 @@ public class Main {
 
     private static void identificarComponentesNoGrafo(Grafo g) {
         g.identificarComponentesNoGrafo();
+    }
+
+    private static void dijkstra(Grafo g, Scanner scanner) {
+        LOGGER.info("Vértices já existentes: " + g.obterTodosOsVerticesAsString());
+        g.dijkstra(g.obterVerticePeloIdentificador(scanner.next()));
     }
 }

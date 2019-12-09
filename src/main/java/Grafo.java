@@ -349,6 +349,52 @@ public class Grafo implements Serializable {
         });
     }
 
+    public void dijkstra(Vertice origem) {
+        int numeroDeVertices = this.obterNumeroDeVertices();
+        LinkedList<Vertice> vertices = new LinkedList<>(this.grafo.keySet());
+
+        final float [] dist = new float [numeroDeVertices];
+        final float [] pred = new float [numeroDeVertices];
+        final boolean [] visited = new boolean [numeroDeVertices];
+
+        Arrays.fill(dist, Float.POSITIVE_INFINITY);
+        dist[vertices.indexOf(origem)] = 0;
+
+        for (int i = 0; i < dist.length; i++) {
+            final int next = minVertex(dist, visited);
+            visited[next] = true;
+
+            List<Vertice> vertices1 = new ArrayList<>(this.obterArestasDoVertice(vertices.get(next)).stream().map(Aresta::getVerticeDestino).collect(Collectors.toSet()));
+            final int [] n = new int[vertices1.size()];
+
+            for (int j = 0; j < vertices1.size(); j++) {
+                n[j] = vertices.indexOf(vertices1.get(j));
+            }
+
+            for (final int v : n) {
+                final Vertice jhk = vertices.get(v);
+                final float d = dist[next] + this.obterArestasDoVertice(vertices.get(next)).stream().filter(a -> a.getVerticeDestino().equals(jhk)).findFirst().get().getPeso();
+                if (dist[v] > d) {
+                    dist[v] = d;
+                    pred[v] = next;
+                }
+            }
+        }
+
+        for (int i = 0; i < numeroDeVertices; ++i) {
+            System.out.println("Origem: " + origem.getIdentificador() + ". Destino: " + vertices.get(i) + ". Peso: " + String.format("%.0f", dist[i]));
+        }
+    }
+
+    private static int minVertex (float [] dist, boolean [] v) {
+        float x = Integer.MAX_VALUE;
+        int y = -1;
+        for (int i = 0; i < dist.length; i++) {
+            if (!v[i] && dist[i]<x) {y=i; x=dist[i];}
+        }
+        return y;
+    }
+
     public void bellmanFord(Vertice origem) {
         Integer numeroDeVertices = this.obterNumeroDeVertices();
 
@@ -457,10 +503,12 @@ public class Grafo implements Serializable {
         double floydWarshallSegundos = (double) this.floydWarshallBenchMark() / 1_000_000_000;
         double warshallSegundos = (double) this.warshallBenchMark() / 1_000_000_000;
         double bellmanFordSegundos = (double) this.bellmanFordBenchMark(this.grafo.firstKey()) / 1_000_000_000;
+        double dijkstraSegundos = (double) this.dijkstraBenchMark(this.grafo.firstKey()) / 1_000_000_000;
 
         System.out.println("Tempo de execução Floyd-Warshall: "+floydWarshallSegundos+"s");
         System.out.println("Tempo de execução Warshall: "+warshallSegundos+"s");
         System.out.println("Tempo de execução Bellman-Ford: "+bellmanFordSegundos+"s");
+        System.out.println("Tempo de execução Dijkstra: "+dijkstraSegundos+"s");
     }
 
     private long floydWarshallBenchMark() {
@@ -580,6 +628,41 @@ public class Grafo implements Serializable {
             buscaEmProfundidadeIdentificarComponentes(verticesVisitados, a.getVerticeOrigem(), this.grafo.get(a.getVerticeOrigem()), verticesVisitadosIteracao);
             buscaEmProfundidadeIdentificarComponentes(verticesVisitados, a.getVerticeDestino(), this.grafo.get(a.getVerticeDestino()), verticesVisitadosIteracao);
         });
+    }
+
+    public long dijkstraBenchMark(Vertice origem) {
+        int numeroDeVertices = this.obterNumeroDeVertices();
+        LinkedList<Vertice> vertices = new LinkedList<>(this.grafo.keySet());
+
+        final float [] dist = new float [numeroDeVertices];
+        final float [] pred = new float [numeroDeVertices];
+        final boolean [] visited = new boolean [numeroDeVertices];
+
+        long startTime = System.nanoTime();
+        Arrays.fill(dist, Float.POSITIVE_INFINITY);
+        dist[vertices.indexOf(origem)] = 0;
+
+        for (int i = 0; i < dist.length; i++) {
+            final int next = minVertex(dist, visited);
+            visited[next] = true;
+
+            List<Vertice> vertices1 = new ArrayList<>(this.obterArestasDoVertice(vertices.get(next)).stream().map(Aresta::getVerticeDestino).collect(Collectors.toSet()));
+            final int [] n = new int[vertices1.size()];
+
+            for (int j = 0; j < vertices1.size(); j++) {
+                n[j] = vertices.indexOf(vertices1.get(j));
+            }
+
+            for (final int v : n) {
+                final Vertice jhk = vertices.get(v);
+                final float d = dist[next] + this.obterArestasDoVertice(vertices.get(next)).stream().filter(a -> a.getVerticeDestino().equals(jhk)).findFirst().get().getPeso();
+                if (dist[v] > d) {
+                    dist[v] = d;
+                    pred[v] = next;
+                }
+            }
+        }
+        return System.nanoTime() - startTime;
     }
 
     public List<Aresta> obterArestasDoVertice(Vertice vertice) {
